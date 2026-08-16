@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>NASA Astronomy Picture of the Day</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px 20px;
+        }
+
+        h1 {
+            color: #58a6ff;
+            margin-bottom: 20px;
+        }
+
+        form {
+            background: #161b22;
+            padding: 20px;
+            border-radius: 10px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        input[type="text"] {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 8px 12px;
+            border-radius: 6px;
+        }
+
+        button {
+            background: #238636;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: #2ea043;
+        }
+
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 10px;
+            padding: 20px;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        .card img {
+            border-radius: 8px;
+            max-width: 100%;
+            margin: 15px 0;
+        }
+
+        .error {
+            color: #f85149;
+            background: #161b22;
+            padding: 10px 20px;
+            border-radius: 6px;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 20px 10px;
+            }
+
+            h1 {
+                font-size: 1.4em;
+                text-align: center;
+            }
+
+            form {
+                flex-direction: column;
+                width: 100%;
+                max-width: 350px;
+            }
+
+            input[type="text"], button {
+                width: 100%;
+            }
+
+            .card {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>NASA Astronomy Picture of the Day</h1>
+
+    <form method="POST" id="apod-form">
+        <label>Date:</label>
+        <input type="text" name="date" id="date-input" placeholder="YYYY-MM-DD">
+        <button type="submit" id="submit-btn">Get Picture</button>
+        <button type="button" id="random-btn">Random</button>
+    </form>
+    <p id="loading" style="display:none; color:#8b949e;">Fetching image from NASA...</p>
+
+    {% if error %}
+        <p class="error">Error: {{ error }}</p>
+    {% endif %}
+
+    {% if data %}
+        <div class="card">
+            <h2>{{ data.title }} ({{ data.date }})</h2>
+            <img src="{{ data.url }}">
+            <p>{{ data.explanation }}</p>
+        </div>
+    {% endif %}
+
+    <script>
+        document.getElementById("apod-form").addEventListener("submit", function() {
+            document.getElementById("submit-btn").disabled = true;
+            document.getElementById("submit-btn").innerText = "Loading...";
+            document.getElementById("loading").style.display = "block";
+        });
+    </script>
+    <script>
+        document.getElementById("random-btn").addEventListener("click", function() {
+            const start = new Date("1995-06-16").getTime();
+            const end = new Date().getTime();
+            const randomTime = start + Math.random() * (end - start);
+            const randomDate = new Date(randomTime);
+
+            const yyyy = randomDate.getFullYear();
+            const mm = String(randomDate.getMonth() + 1).padStart(2, "0");
+            const dd = String(randomDate.getDate()).padStart(2, "0");
+
+            document.getElementById("date-input").value = `${yyyy}-${mm}-${dd}`;
+            document.getElementById("apod-form").requestSubmit();
+        });
+    </script>
+</body>
+</html>
